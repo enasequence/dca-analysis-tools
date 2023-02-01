@@ -1,0 +1,14 @@
+# basedir = workflow.basedir
+# print("Base dir: {}".format(basedir))
+
+configfile: "/......../public_seq_lineages_workflow/config/config.yaml"
+
+##### load rules ######
+include: "rules/transfer.smk"
+include: "rules/create_update_list.smk"
+include: "rules/fetch_public_seq_multifasta.smk"
+include: "rules/run_pangolin.smk"
+include: "rules/concat_csv.smk"
+##### target rules ######
+rule all:
+	input: expand("{output_dir}/pango_seq/end_of_pangolin_workflow.txt", output_dir=config["output_dir"])

@@ -1,0 +1,5 @@
+chunks: 500
+output_dir: ""
+final_output_dir: ""
+workflow_dir: ""
+temp_dir : ""
