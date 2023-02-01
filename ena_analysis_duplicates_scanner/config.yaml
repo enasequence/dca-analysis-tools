@@ -1,0 +1,9 @@
+[ERAPRO_DETAILS]
+host = 
+port = 
+serviceName = 
+userName = 
+password = 
+
+[DataHub_Projects]
+projects = 'PRJEB####','PRJEB####','PRJEB####','PRJEB####','PRJEB####','PRJEB###'
