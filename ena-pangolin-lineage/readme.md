@@ -72,6 +72,7 @@ Conda activate <env name>
 **For public analysis configFile:**
   - ***project_ids:*** ```<PRJEB#####,PRJEB####,PRJEB####>``` -> The project ids that contains the analysis of interest (The analysis to be fetched) separated by comma without spaces 
 
+
 - Modify the configFile path in the *Snakefile* to direct to your current *config.yaml* file
    ``` configfile: "<path/to/config.yaml>" ```
 
