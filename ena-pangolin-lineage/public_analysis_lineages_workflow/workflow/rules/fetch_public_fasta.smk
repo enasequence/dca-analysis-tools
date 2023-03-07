@@ -9,4 +9,4 @@ rule fetch_public_fasta:
                 tmpdir=config["temp_dir"]
 
 	shell:
-		 "python3 {config[workflow_dir]}/workflow/scripts/public_consensus_fetch.py -o {config[output_dir]}/public_consensus"
+		 "python3 {config[workflow_dir]}/workflow/scripts/public_consensus_fetch.py -o {config[output_dir]}/public_consensus -p {config[project_ids]}"

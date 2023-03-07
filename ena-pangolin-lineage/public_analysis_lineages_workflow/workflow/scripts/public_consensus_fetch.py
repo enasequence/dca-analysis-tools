@@ -28,15 +28,39 @@ parser = argparse.ArgumentParser(prog='pulling_fasta.py', formatter_class=argpar
         |             Tool to to fetch consensus data from ENA           |
         + =========================================================== +  """)
 parser.add_argument('-o', '--output', help='Fasta files output directory', type=str, required=True)
+parser.add_argument('-p', '--project', help='projects ids (separated with comma without spaces )', type=str, required=True)
 args = parser.parse_args()
 
-def public_metadata_fetch():
+def project_parsing():
+    study_accession = [f'study_accession%3D%22{i}' for i in args.project.split(',')]
+    length= len(study_accession)
+    counter = 0
+    study_accession_updated =[]
+    for x in study_accession:
+        counter += 1
+        if counter == length:
+            study_accession_updated.append(f'{x}')
+        else:
+            study_accession_updated.append(f'{x}%22%20OR%20')
+        study_acc_final = (''.join(study_accession_updated))
 
+    return study_acc_final
+
+
+
+
+
+def public_metadata_fetch():
+    study_acc = project_parsing()
     print('Fetching  Metadata From Advanced Search...................................................................')
     server = "https://www.ebi.ac.uk/ena/portal/api/search"
-    ext = "?result=analysis&query=tax_eq(2697049%20)%20AND%20study_accession%3D%22PRJEB45619%22&fields=submitted_ftp&limit=0&format=json"
+    ext = f"?result=analysis&query=tax_eq(2697049%20)%20AND%20({study_acc}%22)&fields=submitted_ftp&limit=0&format=json"
     command = requests.get(server + ext , headers={"Content-Type": "application/json"})
     status = command.status_code
+    if status == 204:
+        sys.stderr.write(
+            f"Attention: The Assigned Project(s) {args.project} has(have) no data\nExiting.......")
+        exit(1)
     if status == 500:
         sys.stderr.write("Attention: Internal Server Error, the process has stopped and skipped ( Data might be incomplete )\n")
     data = json.loads(command.content)

@@ -69,8 +69,11 @@ Conda activate <env name>
 
  - ***days:*** ```<integer number>``` -> collect sequences with submission date in the period of the number of days specify past the current date.
 
- - Modify the configFile path in the *Snakefile* to direct to your current *config.yaml* file
-   ``` configfile: "<path/to/ config.yaml>" ```
+**For public analysis configFile:**
+  - ***project_ids:*** ```<PRJEB#####,PRJEB####,PRJEB####>``` -> The project ids that contains the analysis of interest (The analysis to be fetched) separated by comma without spaces 
+
+- Modify the configFile path in the *Snakefile* to direct to your current *config.yaml* file
+   ``` configfile: "<path/to/config.yaml>" ```
 
 ### Run the Workflow
 ***To run the workflow just run the following command:***
