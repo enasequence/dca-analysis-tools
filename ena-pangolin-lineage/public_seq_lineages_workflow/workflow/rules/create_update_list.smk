@@ -6,7 +6,6 @@ rule create_update_list:
         params:
                 days = config["days"]
         resources:
-                mem_mb = 3048,
-		tmpdir=config["temp_dir"]
+                mem_mb = 3048
         shell:
                 "python3 {config[workflow_dir]}/workflow/scripts/list_updated.py -o {config[output_dir]} -f {input} -d {params.days}"

@@ -4,4 +4,3 @@ final_output_dir: ""
 transfer_input: ""
 workflow_dir: ""
 days: 90
-temp_dir : ""

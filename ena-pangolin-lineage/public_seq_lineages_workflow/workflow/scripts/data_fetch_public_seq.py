@@ -20,18 +20,29 @@ import datetime
 import pandas as pd
 import math
 from dateutil.relativedelta import relativedelta, MO
+import logging
+import requests
+from requests.adapters import HTTPAdapter, Retry
 parser = argparse.ArgumentParser(prog='pulling_fasta.py', formatter_class=argparse.RawDescriptionHelpFormatter,
                                      epilog="""
         + ============================================================ +
-        |               European Nucleotide Archive (ENA)
-		  part of Public sequence pangolin lineages Tool       |
+        |  European Nucleotide Archive (ENA) data flow monitoring Tool  |
         |                                                              |
-        |             Tool to to fetch data from ENA                   |
+        |             Tool to to fetch data from NCBI or ENA           |
         + =========================================================== +  """)
 parser.add_argument('-f', '--file', help='Fasta accessions file directory', type=str, required=True)
 parser.add_argument('-num', '--number', help='Max Number of the multifasta file output required', type=str, required=True)
 parser.add_argument('-o', '--output', help='Fasta files output directory', type=str, required=True)
 args = parser.parse_args()
+
+
+def divide_chunks(l, n):
+
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+
 
 def fetching_fasta_files ():
     outdir = f"{args.output}"
@@ -44,34 +55,71 @@ def fetching_fasta_files ():
     number_fasta_seq = math.trunc(total_num / int(args.number))
     print(f"Found {total_num} fasta files in {args.file} - writing {number_fasta_seq} sequences to each multifasta file, the rest -if exist- will be merged with the last file **************\n")
     fasta_acc = []
+    fasta_temp_list =[]
     for accession in accession_df['accession']:
-        counter += 1
-        if extn >= int(args.number):
-            continue
-        fasta_acc.append(accession)
-        server = "https://www.ebi.ac.uk/ena/browser/api/fasta/"
-        ext = f"{accession}"
-        command = requests.get(server + ext, headers={"Content-Type": "text/tab-separated-values"},stream=True)
-        status = command.status_code
-        data = command.content.decode('ISO-8859-1')
-        with open(f"{outdir}/multifasta_{extn}.fasta", "a") as f:
-            f.write(data)
+        if accession != 'accession':
+            counter += 1
+            if extn >= int(args.number):
+                continue
+            fasta_acc.append(accession)
+            fasta_temp_list.append(accession)
 
-        if counter >= number_fasta_seq:
-            counter = 0
-            extn += 1
+            if counter >= number_fasta_seq:
+                if len(fasta_temp_list) >= 500:
+                    fasta_temp_list_divided = divide_chunks(fasta_temp_list, 500)
+                    for fastaList in fasta_temp_list_divided:
+                        modifiedFasta_list = ','.join([str(element) for element in fastaList])
+                        server = "https://www.ebi.ac.uk/ena/browser/api/fasta/"
+                        ext = f"{modifiedFasta_list}"
+                        # logging.basicConfig(level=logging.DEBUG)
+
+                        session = requests.Session()
+                        retries = Retry(total=5, backoff_factor=1, status_forcelist=[502, 503, 504])
+                        session.mount('http://', HTTPAdapter(max_retries=retries))
+                        command = session.get(server + ext, headers={"Content-Type": "text/tab-separated-values"},
+                                              stream=True)
+                        status = command.status_code
+                        print(status)
+                        data = command.content.decode('ISO-8859-1')
+                        with open(f"{outdir}/multifasta_{extn}.fasta", "a") as f:
+                            f.write(data)
+                else:       
+                    modifiedFasta_list = ','.join([str(element) for element in fasta_temp_list])
+                    print(len(fasta_temp_list))
+                    server = "https://www.ebi.ac.uk/ena/browser/api/fasta/"
+                    ext = f"{modifiedFasta_list}"
+                    # logging.basicConfig(level=logging.DEBUG)
+
+                    session = requests.Session()
+                    retries = Retry(total=5, backoff_factor=1, status_forcelist=[502, 503, 504])
+                    session.mount('http://', HTTPAdapter(max_retries=retries))
+                    command = session.get(server + ext, headers={"Content-Type": "text/tab-separated-values"}, stream=True)
+                    status = command.status_code
+                    print(status)
+                    data = command.content.decode('ISO-8859-1')
+                    with open(f"{outdir}/multifasta_{extn}.fasta", "a") as f:
+                        f.write(data)
+                fasta_temp_list = []
+                counter = 0
+                extn += 1
 
     if extn <= int(args.number):
         for accession in accession_df['accession']:
             if accession not in fasta_acc:
-                fasta_acc.append(accession)
-                server = "https://www.ebi.ac.uk/ena/browser/api/fasta/"
-                ext = f"{accession}"
-                command = requests.get(server + ext, headers={"Content-Type": "text/tab-separated-values"}, stream=True)
-                status = command.status_code
-                data = command.content.decode('ISO-8859-1')
-                with open(f"{outdir}/multifasta_{extn}.fasta", "a") as f:
-                    f.write(data)
+                if accession !='accession':
+                    fasta_acc.append(accession)
+                    server = "https://www.ebi.ac.uk/ena/browser/api/fasta/"
+                    ext = f"{accession}"
+                    #logging.basicConfig(level=logging.DEBUG)
+
+                    session = requests.Session()
+                    retries = Retry(total=5, backoff_factor=1, status_forcelist=[502, 503, 504])
+                    session.mount('http://', HTTPAdapter(max_retries=retries))
+                    command = session.get(server + ext, headers={"Content-Type": "text/tab-separated-values"}, stream=True)
+                    status = command.status_code
+                    data = command.content.decode('ISO-8859-1')
+                    with open(f"{outdir}/multifasta_{extn}.fasta", "a") as f:
+                        f.write(data)
 
     print(f"{extn} Multifasta Files have been Created ****************\n")
 
