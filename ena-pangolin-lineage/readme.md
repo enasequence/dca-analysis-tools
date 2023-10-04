@@ -14,7 +14,7 @@ The workflows includes:
  - Installation of snakemake, please follow the guideline below:      
    [https://snakemake.readthedocs.io/en/stable/getting_started/installation.html]
    (https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
-  - Installation of snakemake LSF profile, please follow the instalation guideline below:      
+  - Installation of snakemake LSF profile, please follow the Installation guideline below:      
    [https://github.com/Snakemake-Profiles/lsf#install]
    (https://github.com/Snakemake-Profiles/lsf#install)
  - Install pangolin software to your conda environment (please follow the link below)   
