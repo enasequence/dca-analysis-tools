@@ -1,6 +1,6 @@
 rule symlink:
 	input:
-        expand("{output_dir}/pango_seq/end_of_pangolin_workflow.txt", output_dir=config["output_dir"])
+                expand("{output_dir}/pango_seq/merged.txt", output_dir=config["output_dir"])
 	output:
 		"{output_dir}/pango_seq/symlinked.txt"
 

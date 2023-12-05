@@ -1,7 +1,7 @@
 # basedir = workflow.basedir
 # print("Base dir: {}".format(basedir))
 
-configfile: "/......../public_seq_lineages_workflow/config/config.yaml"
+configfile: "........../public_seq_lineages_workflow/config/config.yaml"
 
 ##### load rules ######
 include: "rules/transfer.smk"
@@ -9,6 +9,7 @@ include: "rules/create_update_list.smk"
 include: "rules/fetch_public_seq_multifasta.smk"
 include: "rules/run_pangolin.smk"
 include: "rules/concat_csv.smk"
+include: "rules/filtration_merging.smk"
 include: "rules/symlink.smk"
 ##### target rules ######
 rule all:
