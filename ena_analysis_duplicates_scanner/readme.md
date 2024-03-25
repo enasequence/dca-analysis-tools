@@ -9,7 +9,7 @@ The tool exclude the suppressed and cancelled data and print out three files
 2. List of accessions to be cancelled ( *if exist*) 
 3. List of accessions to be suppressed (*if exist*)
 
->Note: The tool send the recent submission out of the duplicates to be suppressed/ cancelled except if the duplicates contains both private and public status, then it will cancel the private analysis regardless of the submission date 
+>Note: The tool send the most recent submission out of the duplicates to be suppressed/ cancelled except if the duplicates contains both private and public status, then it will cancel the private analysis regardless of the submission date 
 ## Getting Started
 
 `This script needs to be run through the VPN`
