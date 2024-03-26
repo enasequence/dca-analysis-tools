@@ -28,6 +28,7 @@ import collections
 import numpy as np
 import pandas as pd
 import datetime
+import configparser
 __author__ = "Ahmad Zyoud"
 
 parser = argparse.ArgumentParser(prog='analysis_bulk_suppressor.py', formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -52,9 +53,9 @@ def get_oracle_usr_pwd():
     config = configparser.ConfigParser()
     config.read(args.config)
     if database.lower() == 'erapro':
-        return [config['ERAPRO_DETAILS']['userName'].iloc[0], config['ERAPRO_DETAILS']['password'].iloc[0]]
+        return [config['ERAPRO_DETAILS']['userName'], config['ERAPRO_DETAILS']['password']]
     elif database.lower() == 'enapro':
-        return [config['ENAPRO_DETAILS']['userName'].iloc[0], config['ENAPRO_DETAILS']['password'].iloc[0]]
+        return [config['ENAPRO_DETAILS']['userName'], config['ENAPRO_DETAILS']['password']]
 
 
 
@@ -63,6 +64,7 @@ Setup the connection to ENAPRO and ERAPRO.
 """
 def setup_connection():
     config = configparser.ConfigParser()
+    config.read(args.config)
     oracle_usr, oracle_pwd = get_oracle_usr_pwd()
     client_lib_dir = os.getenv('ORACLE_CLIENT_LIB')
     if database == 'enapro':
@@ -92,6 +94,7 @@ def setup_connection():
 
 def suppression(connection, action):
     config = configparser.ConfigParser()
+    config.read(args.config)
     c = connection.cursor()
     connection.autocommit = True
     df = pd.read_csv(args.file, sep="\t", header=None)
