@@ -1,0 +1,15 @@
+# basedir = workflow.basedir
+# print("Base dir: {}".format(basedir))
+
+configfile: "/hps/software/users/cochrane/ena/azyoud/NCBI-ENA_reporting/cov-insdc-sync_workflow_v2/config/config_workflow.yaml"
+
+##### load rules #####
+include: "rules/fetch_data.smk"
+include: "rules/data_analysis.smk"
+include: "rules/emailer.smk"
+
+##### target rules ######
+
+rule all:
+	input: expand("{output_dir}/sent.txt", output_dir=config["output_dir"])
+
