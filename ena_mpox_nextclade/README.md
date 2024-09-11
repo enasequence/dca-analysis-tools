@@ -6,12 +6,12 @@ This repository provides a pipeline to download public Mpox data from ENA via AP
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/KhadimGueyeKgy1/ENA_Mpox_nextclade.git
+   git clone https://github.com/enasequence/dca-analysis-tools.git
    ```
 
 2. **Navigate to the project directory:**
    ```sh
-   cd ENA_Mpox_nextclade
+   cd dca-analysis-tools/ena_mpox_nextclade
    ```
 
 3. **Install required Python packages:**
